@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-01-15T18:21:12.979158",
+  "session_id": "1736965272.978815",
+  "metrics": {
+    "num_interactions": 5,
+    "avg_quality": 0.836,
+    "engagement_level": 0.418
+  },
+  "state_evolution": [
+    [
+      0.5,
+      0.036563976590986494,
+      0.0
+    ],
+    [
+      0.65,
+      0.30108350693674657,
+      0.16021063650015
+    ],
+    [
+      0.8,
+      0.40117598720169023,
+      0.3035501458047136
+    ],
+    [
+      0.9500000000000001,
+      0.6995778310567842,
+      0.03691379763236331
+    ],
+    [
+      1.0,
+      0.9589944133657274,
+      0.09404281551886609
+    ]
+  ],
+  "interactions": [
+    {
+      "timestamp": "2025-01-15T18:21:34.891697",
+      "speaker": "professor",
+      "content": "How do different learning approaches affect understanding?",
+      "topic": "general",
+      "quality": 0.7
+    },
+    {
+      "timestamp": "2025-01-15T18:22:00.606910",
+      "speaker": "student_1",
+      "content": "I think it depends on the individual learner.",
+      "topic": "general",
+      "quality": 0.77
+    },
+    {
+      "timestamp": "2025-01-15T18:22:17.765378",
+      "speaker": "student_2",
+      "content": "I've noticed that connecting concepts helps me learn better.",
+      "topic": "general",
+      "quality": 0.84
+    },
+    {
+      "timestamp": "2025-01-15T18:22:33.466191",
+      "speaker": "student_3",
+      "content": "The most effective learning often emerges from discussion.",
+      "topic": "general",
+      "quality": 0.91
+    },
+    {
+      "timestamp": "2025-01-15T18:23:01.355461",
+      "speaker": "student_4",
+      "content": "I've noticed that connecting concepts helps me learn better.",
+      "topic": "general",
+      "quality": 0.96
+    }
+  ]
+}

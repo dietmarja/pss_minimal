@@ -1,11 +1,11 @@
 [
   {
-    "timestamp": "2025-01-15 12:29:10.361264",
+    "timestamp": "2025-01-15 17:52:28.376139",
     "metrics": {
       "pattern_similarity": 0.5,
-      "learning_effectiveness": 5.606592745621697e-08,
-      "engagement_score": 0.9998927906617413,
-      "temporal_alignment": 3.6216679161016496e-08
+      "learning_effectiveness": 0.714378297328949,
+      "engagement_score": 0.7216720383372635,
+      "temporal_alignment": 0.714395779855326
     },
     "num_interactions": 5,
     "ednet_sample_size": 100

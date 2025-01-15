@@ -1,85 +1,133 @@
 # File: prototype/simulation/emergent_simulation.py
 
-import torch
-from transformers import AutoModel, AutoTokenizer
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
+from pathlib import Path
+from typing import List, Dict, Optional
+import random
 import numpy as np
-import logging
-from prototype.models.emergent_models import DynamicState, EmergentPattern, DynamicInteraction, EmergentSession
-
-logger = logging.getLogger(__name__)
+from prototype.models.emergent_models import DynamicInteraction, EmergentSession
 
 class EmergentSimulation:
-    def __init__(self, model_name: str = "bert-base-uncased"):
-        self.model = AutoModel.from_pretrained(model_name)
-        self.pattern_space = torch.zeros(768)  # Dynamic pattern space
+    def __init__(self):
+        self.roles = ["professor", "student_1", "student_2", "student_3"]
+        self.discourse_state = {"depth": 0, "engagement": 0.5}
         
-    def run_session(self) -> EmergentSession:
-        """Let patterns emerge naturally."""
+    def run_session(self, topics: Optional[List[str]] = None) -> EmergentSession:
+        """Run a complete teaching session."""
+        if topics is None:
+            topics = ["general"]
+            
         session = EmergentSession(
-            id=f"session_{datetime.now().timestamp()}",
+            id=str(datetime.now().timestamp()),
             timestamp=datetime.now()
         )
         
-        # Initialize state
-        current_state = DynamicState(
-            embeddings=torch.zeros(768),
-            temporal_patterns=[],
-            interaction_history=[]
+        # Professor starts the discussion
+        interaction = self._generate_interaction(
+            "professor",
+            interaction_type="introduction",
+            topic=topics[0]
         )
+        session.add_interaction(interaction)
         
-        for _ in range(5):  # Generate 5 patterns for initial implementation
-            # Generate next pattern
-            next_pattern = self._evolve_pattern_space(current_state)
+        # Natural discussion emerges
+        for i in range(4):
+            # Update discourse state
+            self.discourse_state["depth"] += 0.2
+            self.discourse_state["engagement"] = min(1.0, 
+                self.discourse_state["engagement"] + 0.15)
             
-            # Quality emerges from pattern similarity
-            quality = float(torch.cosine_similarity(
-                next_pattern.unsqueeze(0),
-                self.pattern_space.unsqueeze(0)
-            ))
+            # Select topic
+            topic_idx = min(i // 2, len(topics) - 1)
+            current_topic = topics[topic_idx]
             
-            # Create interaction
-            interaction = DynamicInteraction(
-                timestamp=datetime.now(),
-                content_embedding=next_pattern,
-                context_state=current_state,
-                evolution_trace=session.state_trace,
-                speaker="system",
-                content="",
-                topic="",
-                interaction_type="pattern",
-                response_quality=quality
+            # Generate student response
+            student_id = f"student_{i + 1}"
+            interaction = self._generate_interaction(
+                student_id,
+                interaction_type="response",
+                topic=current_topic
             )
-            
             session.add_interaction(interaction)
-            
-            # Update states
-            self.pattern_space = (self.pattern_space + next_pattern) / 2
-            current_state = DynamicState(
-                embeddings=next_pattern,
-                temporal_patterns=current_state.temporal_patterns + [next_pattern],
-                interaction_history=current_state.interaction_history + [interaction]
-            )
-            
+        
         return session
-
-    def _evolve_pattern_space(self, current_state: DynamicState) -> torch.Tensor:
-        """Let next pattern emerge from current state."""
-        if not current_state.temporal_patterns:
-            # Initial pattern generation
-            pattern = torch.randn(768)
-            return pattern / torch.norm(pattern)  # Normalize
+    
+    def _generate_interaction(self, 
+                            speaker: str, 
+                            interaction_type: str,
+                            topic: str) -> DynamicInteraction:
+        """Generate a meaningful interaction."""
+        if speaker == "professor":
+            if interaction_type == "introduction":
+                content = self._generate_professor_intro()
+            else:
+                content = self._generate_professor_response()
+        else:
+            content = self._generate_student_response()
             
-        # Create pattern from history
-        patterns = torch.stack(current_state.temporal_patterns + [current_state.embeddings])
+        # Generate state vector [engagement, understanding, complexity]
+        state_vector = np.array([
+            self.discourse_state["engagement"],
+            min(1.0, self.discourse_state["depth"] + random.random() * 0.2),
+            random.random() * self.discourse_state["depth"]
+        ])
         
-        # Self-attention mechanism
-        attention_weights = torch.nn.functional.softmax(
-            torch.matmul(patterns, patterns.t()) / np.sqrt(patterns.size(-1)),
-            dim=-1
+        quality = self._calculate_quality()
+            
+        return DynamicInteraction(
+            timestamp=self._generate_timestamp(),
+            speaker=speaker,
+            content=content,
+            topic=topic,
+            interaction_type=interaction_type,
+            response_quality=quality,
+            state_vector=state_vector
         )
+    
+    def _generate_professor_intro(self) -> str:
+        intros = [
+            "How do different learning approaches affect understanding?",
+            "What makes some explanations more effective than others?",
+            "Let's explore how we build knowledge together.",
+            "What patterns have you noticed in your learning process?"
+        ]
+        return random.choice(intros)
         
-        # Evolve pattern
-        evolved_pattern = torch.matmul(attention_weights[-1:], patterns).squeeze(0)
-        return evolved_pattern / torch.norm(evolved_pattern)  # Normalize
+    def _generate_student_response(self) -> str:
+        depth = self.discourse_state["depth"]
+        if depth < 0.3:
+            responses = [
+                "I think it depends on the individual learner.",
+                "Different methods work for different people.",
+                "Sometimes simpler explanations are better."
+            ]
+        else:
+            responses = [
+                "I've noticed that connecting concepts helps me learn better.",
+                "When we discuss ideas, new patterns become clear.",
+                "The most effective learning often emerges from discussion."
+            ]
+        return random.choice(responses)
+
+    def _generate_professor_response(self) -> str:
+        responses = [
+            "That's an interesting perspective. Can you elaborate?",
+            "How does that connect to your learning experience?",
+            "What specific examples come to mind?",
+            "How might this apply in different contexts?"
+        ]
+        return random.choice(responses)
+        
+    def _calculate_quality(self) -> float:
+        base_quality = 0.6
+        depth_factor = self.discourse_state["depth"] * 0.2
+        engagement_factor = self.discourse_state["engagement"] * 0.2
+        quality = base_quality + depth_factor + engagement_factor
+        return min(1.0, quality)
+        
+    def _generate_timestamp(self) -> datetime:
+        last_time = getattr(self, 'last_time', datetime.now())
+        delay = random.uniform(15, 30)
+        new_time = last_time + timedelta(seconds=delay)
+        self.last_time = new_time
+        return new_time

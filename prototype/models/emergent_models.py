@@ -1,60 +1,53 @@
 # File: prototype/models/emergent_models.py
 
-import torch
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import List, Dict, Optional
 from datetime import datetime
-
-@dataclass
-class DynamicState:
-    embeddings: torch.Tensor
-    temporal_patterns: List[torch.Tensor] = field(default_factory=list)
-    interaction_history: List[Dict] = field(default_factory=list)
-
-@dataclass
-class EmergentPattern:
-    """Pattern representation for learning trajectory."""
-    embedding: torch.Tensor
-    trajectory: List[torch.Tensor]
-    success_rate: float
-    temporal_context: List[datetime]
+import numpy as np
 
 @dataclass
 class DynamicInteraction:
+    """Represents a single interaction in the system."""
     timestamp: datetime
-    content_embedding: torch.Tensor
-    context_state: DynamicState
-    evolution_trace: List[torch.Tensor]
     speaker: str
-    content: str = ""
-    topic: str = ""
-    interaction_type: str = "pattern"
-    response_quality: float = 0.0
+    content: str
+    topic: str
+    interaction_type: str
+    response_quality: float
+    state_vector: Optional[np.ndarray] = None
+    
+    def __post_init__(self):
+        if self.state_vector is None:
+            # Simple 3D state vector: [engagement, understanding, complexity]
+            self.state_vector = np.random.rand(3)
 
 @dataclass
 class EmergentSession:
+    """Represents a complete teaching session."""
     id: str
     timestamp: datetime
-    state_trace: List[torch.Tensor] = field(default_factory=list)
-    interaction_embeddings: List[torch.Tensor] = field(default_factory=list)
     interactions: List[DynamicInteraction] = field(default_factory=list)
-
+    state_trace: List[np.ndarray] = field(default_factory=list)
+    
     def add_interaction(self, interaction: DynamicInteraction) -> None:
-        """Add interaction and update session state."""
+        """Add an interaction and update session state."""
         self.interactions.append(interaction)
-        self.interaction_embeddings.append(interaction.content_embedding)
-        new_state = self._compute_state()
-        self.state_trace.append(new_state)
-
-    def _compute_state(self) -> torch.Tensor:
-        """Compute current session state from interactions."""
-        if not self.interaction_embeddings:
-            return torch.zeros(768)  # Default BERT dimension
-        return torch.stack(self.interaction_embeddings).mean(dim=0)
-
-    @property
-    def current_state(self) -> torch.Tensor:
-        """Get current session state."""
-        if not self.state_trace:
-            return torch.zeros(768)
-        return self.state_trace[-1]
+        # Update state trace with the interaction's state vector
+        if interaction.state_vector is not None:
+            self.state_trace.append(interaction.state_vector.copy())
+    
+    def get_session_metrics(self) -> Dict:
+        """Calculate basic session metrics."""
+        if not self.interactions:
+            return {
+                "num_interactions": 0,
+                "avg_quality": 0.0,
+                "engagement_level": 0.0
+            }
+        
+        qualities = [i.response_quality for i in self.interactions]
+        return {
+            "num_interactions": len(self.interactions),
+            "avg_quality": float(np.mean(qualities)),
+            "engagement_level": float(np.mean(qualities) * len(self.interactions) / 10)
+        }

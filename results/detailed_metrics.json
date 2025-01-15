@@ -1,12 +1,12 @@
 {
   "pattern_metrics": {
-    "evolution_rate": 5.606592745621697e-08,
+    "evolution_rate": 0.0,
     "coherence": 0.5,
-    "temporal_stability": 3.6216679161016496e-08
+    "temporal_stability": 0.0
   },
   "interaction_metrics": {
-    "density": 0.9998927906617413,
+    "density": 0.9410335552686474,
     "pattern_count": 5,
-    "average_quality": 0.8
+    "average_quality": 0.6199999999999999
   }
 }

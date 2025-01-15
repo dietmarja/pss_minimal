@@ -1,0 +1,6 @@
+# File: requirements.txt
+
+numpy==1.24.3
+pandas==1.5.3
+pyyaml==5.4.1
+# Remove pyarrow as it's not essential for our minimal prototype
