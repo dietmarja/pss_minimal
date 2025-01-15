@@ -7,6 +7,10 @@ from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from ..models.emergent_models import DynamicInteraction, EmergentPattern
+from prototype.models.emergent_models import EmergentSession  # Add this import
+
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,26 +19,25 @@ class EmergentEvaluator:
         self.ednet_patterns = []
         self.pss_patterns = []
         
-    def evaluate_pss_session(self, session_data: List[DynamicInteraction]) -> Dict:
+# File: prototype/evaluation/emergent_evaluation.py
+# (Update the evaluate_pss_session method to handle EmergentSession)
+
+    def evaluate_pss_session(self, session: EmergentSession) -> Dict:
         """Evaluate PSS session patterns."""
-        if not session_data:
+        if not session.interactions:
             return self._create_empty_metrics()
             
-        # Extract embeddings from interactions
-        pattern_embeddings = [
-            interaction.content_embedding for interaction in session_data
-        ]
-        
         # Create pattern from embeddings
-        pss_pattern = self._create_pattern(pattern_embeddings)
+        pss_pattern = self._create_pattern(session.interaction_embeddings)
         self.pss_patterns.append(pss_pattern)
         
         return {
             'pattern_similarity': self._calculate_pattern_similarity(pss_pattern),
             'learning_effectiveness': self._calculate_effectiveness(pss_pattern),
-            'engagement_score': self._calculate_engagement(session_data),
-            'temporal_alignment': self._calculate_temporal_alignment(session_data)
+            'engagement_score': self._calculate_engagement(session.interactions),
+            'temporal_alignment': self._calculate_temporal_alignment(session.interactions)
         }
+
     
     def _create_pattern(self, embeddings: List[torch.Tensor]) -> EmergentPattern:
         """Create pattern from embeddings."""

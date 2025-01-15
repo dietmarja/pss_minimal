@@ -6,7 +6,9 @@ from typing import List, Dict, Optional
 from datetime import datetime
 import numpy as np
 import logging
-from ..models.emergent_models import DynamicState, EmergentPattern, DynamicInteraction, EmergentSession
+
+# Use absolute import instead of relative
+from prototype.models.emergent_models import DynamicState, EmergentPattern, DynamicInteraction, EmergentSession
 
 logger = logging.getLogger(__name__)
 
@@ -17,22 +19,27 @@ class EmergentSimulation:
         self.sessions = []
         self.knowledge_state = torch.zeros(768)  # BERT hidden size
         
-    def run_session(self, patterns: Optional[List[torch.Tensor]] = None) -> List[DynamicInteraction]:
+# File: prototype/simulation/emergent_simulation.py
+
+    def run_session(self, patterns: Optional[List[torch.Tensor]] = None) -> EmergentSession:
         """Run a content-agnostic simulation session."""
         session = EmergentSession(
             id=f"session_{len(self.sessions)}",
             timestamp=datetime.now()
         )
         
-        # Use provided patterns or generate basic ones
-        interaction_patterns = patterns if patterns is not None else [torch.randn(768)]
+        # Generate or use patterns
+        interaction_patterns = patterns if patterns is not None else [
+            torch.randn(768) for _ in range(5)  # Generate some basic patterns
+        ]
         
         for pattern in interaction_patterns:
             interaction = self._generate_interaction(pattern, session)
             session.add_interaction(interaction)
-                
+        
         self.sessions.append(session)
-        return session.interactions
+        return session
+
     
     def _generate_interaction(self, pattern: torch.Tensor, 
                             session: EmergentSession) -> DynamicInteraction:
