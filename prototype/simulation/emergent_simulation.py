@@ -3,11 +3,9 @@
 import torch
 from transformers import AutoModel, AutoTokenizer
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
 import logging
-
-# Use absolute import instead of relative
 from prototype.models.emergent_models import DynamicState, EmergentPattern, DynamicInteraction, EmergentSession
 
 logger = logging.getLogger(__name__)
@@ -15,76 +13,73 @@ logger = logging.getLogger(__name__)
 class EmergentSimulation:
     def __init__(self, model_name: str = "bert-base-uncased"):
         self.model = AutoModel.from_pretrained(model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.sessions = []
-        self.knowledge_state = torch.zeros(768)  # BERT hidden size
+        self.pattern_space = torch.zeros(768)  # Dynamic pattern space
         
-# File: prototype/simulation/emergent_simulation.py
-
-    def run_session(self, patterns: Optional[List[torch.Tensor]] = None) -> EmergentSession:
-        """Run a content-agnostic simulation session."""
+    def run_session(self) -> EmergentSession:
+        """Let patterns emerge naturally."""
         session = EmergentSession(
-            id=f"session_{len(self.sessions)}",
+            id=f"session_{datetime.now().timestamp()}",
             timestamp=datetime.now()
         )
         
-        # Generate or use patterns
-        interaction_patterns = patterns if patterns is not None else [
-            torch.randn(768) for _ in range(5)  # Generate some basic patterns
-        ]
-        
-        for pattern in interaction_patterns:
-            interaction = self._generate_interaction(pattern, session)
-            session.add_interaction(interaction)
-        
-        self.sessions.append(session)
-        return session
-
-    
-    def _generate_interaction(self, pattern: torch.Tensor, 
-                            session: EmergentSession) -> DynamicInteraction:
-        """Generate a content-agnostic interaction based on pattern."""
-        # Create context state
-        context_state = DynamicState(
-            embeddings=pattern,
-            temporal_patterns=session.state_trace,
+        # Initialize state
+        current_state = DynamicState(
+            embeddings=torch.zeros(768),
+            temporal_patterns=[],
             interaction_history=[]
         )
         
-        return DynamicInteraction(
-            timestamp=datetime.now(),
-            content_embedding=pattern,
-            context_state=context_state,
-            evolution_trace=session.state_trace,
-            speaker="system",
-            content="",  # No content, just patterns
-            topic="",    # Content-agnostic
-            interaction_type="pattern",
-            response_quality=self._calculate_pattern_quality(pattern, session)
-        )
-    
-    def _calculate_pattern_quality(self, pattern: torch.Tensor, 
-                                 session: EmergentSession) -> float:
-        """Calculate quality based purely on pattern relationships."""
-        if not session.state_trace:
-            return 0.8  # Initial quality
+        for _ in range(5):  # Generate 5 patterns for initial implementation
+            # Generate next pattern
+            next_pattern = self._evolve_pattern_space(current_state)
             
-        # Calculate similarity with previous patterns
-        prev_state = torch.stack(session.state_trace).mean(dim=0)
-        similarity = torch.cosine_similarity(
-            pattern.unsqueeze(0), 
-            prev_state.unsqueeze(0)
-        )
-        
-        return float(similarity)
+            # Quality emerges from pattern similarity
+            quality = float(torch.cosine_similarity(
+                next_pattern.unsqueeze(0),
+                self.pattern_space.unsqueeze(0)
+            ))
+            
+            # Create interaction
+            interaction = DynamicInteraction(
+                timestamp=datetime.now(),
+                content_embedding=next_pattern,
+                context_state=current_state,
+                evolution_trace=session.state_trace,
+                speaker="system",
+                content="",
+                topic="",
+                interaction_type="pattern",
+                response_quality=quality
+            )
+            
+            session.add_interaction(interaction)
+            
+            # Update states
+            self.pattern_space = (self.pattern_space + next_pattern) / 2
+            current_state = DynamicState(
+                embeddings=next_pattern,
+                temporal_patterns=current_state.temporal_patterns + [next_pattern],
+                interaction_history=current_state.interaction_history + [interaction]
+            )
+            
+        return session
 
-    def _session_complete(self, session: EmergentSession) -> bool:
-        """Determine session completion based on pattern evolution."""
-        if len(session.state_trace) < 2:
-            return False
+    def _evolve_pattern_space(self, current_state: DynamicState) -> torch.Tensor:
+        """Let next pattern emerge from current state."""
+        if not current_state.temporal_patterns:
+            # Initial pattern generation
+            pattern = torch.randn(768)
+            return pattern / torch.norm(pattern)  # Normalize
             
-        # Check pattern convergence
-        recent_patterns = torch.stack(session.state_trace[-2:])
-        pattern_diff = torch.norm(recent_patterns[1] - recent_patterns[0])
+        # Create pattern from history
+        patterns = torch.stack(current_state.temporal_patterns + [current_state.embeddings])
         
-        return pattern_diff < 0.1 or len(session.state_trace) >= 20
+        # Self-attention mechanism
+        attention_weights = torch.nn.functional.softmax(
+            torch.matmul(patterns, patterns.t()) / np.sqrt(patterns.size(-1)),
+            dim=-1
+        )
+        
+        # Evolve pattern
+        evolved_pattern = torch.matmul(attention_weights[-1:], patterns).squeeze(0)
+        return evolved_pattern / torch.norm(evolved_pattern)  # Normalize
