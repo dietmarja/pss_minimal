@@ -1,0 +1,13 @@
+[
+  {
+    "timestamp":"2025-01-14 19:52:39.757982",
+    "metrics":{
+      "pattern_similarity":0.5,
+      "learning_effectiveness":0.5,
+      "engagement_score":0.5,
+      "temporal_alignment":0.5
+    },
+    "num_interactions":1,
+    "ednet_sample_size":100
+  }
+]
