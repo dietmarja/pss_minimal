@@ -2,104 +2,116 @@
 
 import numpy as np
 from datetime import datetime
-from typing import List, Dict, Optional
-from prototype.models.emergent_models import DynamicInteraction, EmergentSession, EmergentPattern
+from typing import Dict, List, Optional
+import logging
+import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 class EmergentSimulation:
+    """Implements AI-first simulation using emergent dynamics."""
+    
     def __init__(self):
-        # Dynamic state space for concept emergence
         self.concept_space = np.random.randn(768)  # Initial concept embedding
-        self.learning_rate = 0.1
+        self.current_state = None
+        self.interaction_history = []
         
-    def run_session(self, initial_concept: Optional[np.ndarray] = None) -> EmergentSession:
-        """Run an emergent teaching session with dynamic concept evolution."""
-        if initial_concept is not None:
-            self.concept_space = initial_concept
-            
-        session = EmergentSession(
-            id=str(datetime.now().timestamp()),
-            timestamp=datetime.now()
-        )
+    def run_session(self, student_group: pd.DataFrame) -> Dict:
+        """Run simulation for experimental group."""
+        logger.info("Starting emergent simulation session")
         
-        # Let concepts and interactions emerge naturally
-        while not self._reached_convergence(session):
-            # Generate next interaction based on current dynamics
-            interaction = self._generate_interaction(session)
-            session.add_interaction(interaction)
-            
-            # Update concept space based on new patterns
-            self._update_concept_space(interaction)
-            
-        return session
+        # Initialize results storage
+        results = {
+            'scores': [],
+            'completion_rates': [],
+            'time_to_mastery': []
+        }
         
-    def _generate_interaction(self, session: EmergentSession) -> DynamicInteraction:
-        """Generate next interaction based on current dynamics."""
-        # Current state influences next interaction
-        if session.state_history:
-            current_state = session.state_history[-1]
-            influence = current_state.embedding
-        else:
-            influence = self.concept_space
-            
-        # Apply non-linear dynamics
-        embedding = np.tanh(influence + np.random.randn(influence.shape[0]) * 0.1)
+        # Convert student statistics to numpy for easier processing
+        student_data = {
+            'initial_knowledge': student_group['correct']['mean'].values,
+            'interaction_count': student_group['correct']['count'].values,
+            'avg_time': student_group['elapsed_time']['mean'].values
+        }
         
-        # Extract emergent patterns
-        patterns = self._extract_patterns(embedding)
-        
-        # Quality emerges from pattern coherence
-        quality = float(np.mean([p['coherence'] for p in patterns]))
-        
-        return DynamicInteraction(
-            timestamp=datetime.now(),
-            embedding=embedding,
-            patterns=patterns,
-            quality=quality
-        )
-        
-    def _extract_patterns(self, embedding: np.ndarray) -> List[Dict]:
-        """Extract emergent patterns from embedding."""
-        # Reshape for analysis
-        reshaped = embedding.reshape(-1, 1)
-        
-        # Find natural clusters
-        from sklearn.cluster import KMeans
-        clusters = KMeans(n_clusters=min(5, len(reshaped))).fit(reshaped)
-        
-        # Extract patterns
-        patterns = []
-        for i, center in enumerate(clusters.cluster_centers_):
-            pattern = {
-                'embedding': center.flatten(),
-                'strength': np.sum(clusters.labels_ == i) / len(clusters.labels_),
-                'coherence': np.mean(reshaped[clusters.labels_ == i])
+        # Run simulation for each student
+        for i in range(len(student_group)):
+            # Initialize student state
+            self.current_state = {
+                'knowledge': student_data['initial_knowledge'][i],
+                'interactions': 0,
+                'mastery_time': 0
             }
-            patterns.append(pattern)
             
-        return patterns
-        
-    def _reached_convergence(self, session: EmergentSession) -> bool:
-        """Check if session has reached meaningful convergence."""
-        if len(session.interactions) < 5:
-            return False
+            # Run learning process
+            final_state = self._simulate_learning_process(
+                initial_knowledge=student_data['initial_knowledge'][i],
+                avg_time=student_data['avg_time'][i]
+            )
             
-        # Check recent interaction qualities
-        recent_qualities = [i.quality for i in session.interactions[-5:]]
-        quality_change = np.std(recent_qualities)
+            # Record results
+            results['scores'].append(final_state['knowledge'])
+            results['completion_rates'].append(
+                final_state['interactions'] / student_data['interaction_count'][i]
+            )
+            results['time_to_mastery'].append(final_state['mastery_time'])
         
-        # Check pattern stability
-        if session.state_history:
-            recent_complexities = [s.complexity for s in session.state_history[-5:]]
-            complexity_change = np.std(recent_complexities)
-        else:
-            complexity_change = 1.0
+        logger.info(f"Completed simulation for {len(student_group)} students")
+        return results
+    
+    def _simulate_learning_process(self, 
+                                 initial_knowledge: float,
+                                 avg_time: float) -> Dict:
+        """Simulate emergent learning process for one student."""
+        state = {
+            'knowledge': initial_knowledge,
+            'interactions': 0,
+            'mastery_time': 0
+        }
         
-        return quality_change < 0.01 and complexity_change < 0.01
+        # Continue until mastery or max interactions
+        while (state['knowledge'] < 0.95 and 
+               state['interactions'] < 50):  # Prevent infinite loops
+            
+            # Generate next interaction
+            interaction = self._generate_interaction(state)
+            
+            # Update state based on interaction
+            state = self._update_state(state, interaction)
+            
+            # Update metrics
+            state['interactions'] += 1
+            state['mastery_time'] += avg_time * (1 + np.random.normal(0, 0.1))
+            
+        return state
+    
+    def _generate_interaction(self, current_state: Dict) -> Dict:
+        """Generate next interaction based on current state."""
+        # Create current embedding
+        current_embedding = np.concatenate([
+            self.concept_space,
+            np.array([
+                current_state['knowledge'],
+                current_state['interactions'] / 50,  # Normalized interaction count
+                np.random.random()  # Exploration factor
+            ])
+        ])
         
-    def _update_concept_space(self, interaction: DynamicInteraction) -> None:
-        """Update concept space based on new interaction."""
-        # Apply non-linear update
-        influence = interaction.embedding * interaction.quality
-        self.concept_space = np.tanh(
-            self.concept_space + self.learning_rate * influence
-        )
+        # Apply non-linear dynamics
+        interaction_quality = np.tanh(np.mean(current_embedding))
+        
+        return {
+            'embedding': current_embedding,
+            'quality': float(interaction_quality),
+            'timestamp': datetime.now()
+        }
+    
+    def _update_state(self, state: Dict, interaction: Dict) -> Dict:
+        """Update state based on interaction quality."""
+        # Knowledge increases based on interaction quality
+        knowledge_gain = 0.1 * interaction['quality'] * (1 - state['knowledge'])
+        
+        # Apply non-linear learning dynamics
+        state['knowledge'] = min(1.0, state['knowledge'] + knowledge_gain)
+        
+        return state

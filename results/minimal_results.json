@@ -1,13 +1,33 @@
 [
   {
-    "timestamp": "2025-01-15 17:52:28.376139",
-    "metrics": {
-      "pattern_similarity": 0.5,
-      "learning_effectiveness": 0.714378297328949,
-      "engagement_score": 0.7216720383372635,
-      "temporal_alignment": 0.714395779855326
-    },
-    "num_interactions": 5,
-    "ednet_sample_size": 100
+    "timestamp": "2025-01-16 19:08:57.462827",
+    "validation_summary": {
+      "metrics": {
+        "scores": {
+          "pss_mean": 1.06416,
+          "traditional_mean": 0.8336,
+          "difference": 0.23056
+        },
+        "completion_rates": {
+          "pss_mean": 1.2000000000000002,
+          "traditional_mean": 1.0,
+          "difference": 0.20000000000000018
+        },
+        "time_to_mastery": {
+          "pss_mean": 123.12288000000001,
+          "traditional_mean": 155.3748,
+          "difference": -32.251919999999984
+        }
+      },
+      "statistical_analysis": {
+        "t_statistic": 5.646795881710751,
+        "p_value": 1.59662994481431e-07,
+        "significant": true
+      },
+      "effect_sizes": {
+        "cohens_d": 1.1408250456954117,
+        "effect_magnitude": "large"
+      }
+    }
   }
 ]

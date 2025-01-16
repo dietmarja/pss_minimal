@@ -3,61 +3,57 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import random
+import logging
 
-def generate_mock_ednet_data(num_students=10, num_questions=20, output_path='mock_ednet_kt1.csv'):
-    """Generate mock EdNet data for testing."""
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def generate_mock_ednet_data(num_students: int = 100, 
+                           interactions_per_student: int = 50) -> pd.DataFrame:
+    """Generate mock EdNet-KT1 data for testing."""
+    logger.info(f"Generating mock data for {num_students} students")
     
     data = []
-    start_date = datetime(2024, 1, 1)
+    timestamp = datetime.now()
     
-    # Questions represent different math concepts
-    question_types = [
-        'algebra_basic', 'algebra_advanced',
-        'geometry_basic', 'geometry_advanced',
-        'arithmetic_basic', 'arithmetic_advanced'
-    ]
-    
-    for student_id in range(num_students):
-        # Each student attempts multiple questions
-        current_time = start_date + timedelta(days=student_id)
-        student_skill = random.random()  # Random initial skill level
+    for user_id in range(num_students):
+        # Simulate learning progression
+        base_knowledge = np.random.random()  # Initial knowledge level
+        learning_rate = np.random.random() * 0.1  # Individual learning rate
         
-        for question_num in range(num_questions):
-            # Simulate learning - skill improves over time
-            student_skill = min(1.0, student_skill + random.random() * 0.1)
+        for i in range(interactions_per_student):
+            # Knowledge increases with each interaction
+            current_knowledge = min(1.0, base_knowledge + (i * learning_rate))
             
-            # Generate question attempt
-            question_type = random.choice(question_types)
-            question_id = f"{question_type}_{random.randint(1, 5)}"
+            # Generate interaction data
+            interaction = {
+                'user_id': user_id,
+                'timestamp': timestamp + timedelta(minutes=i*5),
+                'question_id': np.random.randint(1, 100),
+                'correct': np.random.random() < current_knowledge,  # Probability based on knowledge
+                'elapsed_time': np.random.randint(10, 300),  # 10-300 seconds
+                'concept_id': np.random.randint(1, 10),
+                'prior_questions': i,
+                'avg_score': current_knowledge
+            }
+            data.append(interaction)
             
-            # Calculate probability of correct answer
-            correct_prob = student_skill * (0.5 + random.random() * 0.5)
-            correct = random.random() < correct_prob
-            
-            # Response time between 10 and 300 seconds
-            response_time = random.randint(10, 300)
-            
-            data.append({
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S'),
-                'user_id': f"student_{student_id}",
-                'question_id': question_id,
-                'correct': int(correct),
-                'response_time': response_time,
-                'topic': question_type
-            })
-            
-            # Move time forward
-            current_time += timedelta(minutes=random.randint(5, 30))
-    
-    # Create DataFrame and save
     df = pd.DataFrame(data)
-    df.to_csv(output_path, index=False)
-    print(f"Generated mock data saved to {output_path}")
-    print(f"Sample of generated data:")
-    print(df.head())
+    logger.info(f"Generated {len(df)} total interactions")
+    
     return df
 
 if __name__ == "__main__":
     # Generate mock data
-    generate_mock_ednet_data()
+    mock_data = generate_mock_ednet_data()
+    
+    # Save to CSV
+    output_file = "mock_ednet_kt1.csv"
+    mock_data.to_csv(output_file, index=False)
+    logger.info(f"Saved mock data to {output_file}")
+
+    # Display sample
+    print("\nSample of generated data:")
+    print(mock_data.head())
+    print("\nData summary:")
+    print(mock_data.describe())

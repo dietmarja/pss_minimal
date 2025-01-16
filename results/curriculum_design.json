@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-01-16T13:19:25.834781",
+  "concepts": [
+    {
+      "concept": "metacognition",
+      "strength": 0.012383585155585075,
+      "objectives": [
+        "Monitor personal learning strategies",
+        "Adapt approaches based on reflection",
+        "Develop self-regulated learning practices"
+      ]
+    },
+    {
+      "concept": "problem_solving",
+      "strength": 0.008732554831271104,
+      "objectives": [
+        "Identify core elements of complex problems",
+        "Apply systematic problem-solving strategies",
+        "Evaluate solution effectiveness"
+      ]
+    }
+  ],
+  "scaffolding": [
+    {
+      "approach": "inquiry_based",
+      "effectiveness": 0.010099494371416998,
+      "activities": [
+        "Guided investigations",
+        "Research projects",
+        "Open-ended exploration"
+      ]
+    },
+    {
+      "approach": "collaborative",
+      "effectiveness": 0.005344325319748683,
+      "activities": [
+        "Peer teaching sessions",
+        "Group problem-solving",
+        "Collaborative projects"
+      ]
+    }
+  ],
+  "learning_sequence": [
+    {
+      "phase": "metacognition through inquiry_based",
+      "activities": [
+        "Guided investigations",
+        "Research projects",
+        "Open-ended exploration"
+      ],
+      "objectives": [
+        "Monitor personal learning strategies",
+        "Adapt approaches based on reflection",
+        "Develop self-regulated learning practices"
+      ]
+    },
+    {
+      "phase": "metacognition through collaborative",
+      "activities": [
+        "Peer teaching sessions",
+        "Group problem-solving",
+        "Collaborative projects"
+      ],
+      "objectives": [
+        "Monitor personal learning strategies",
+        "Adapt approaches based on reflection",
+        "Develop self-regulated learning practices"
+      ]
+    },
+    {
+      "phase": "problem_solving through inquiry_based",
+      "activities": [
+        "Guided investigations",
+        "Research projects",
+        "Open-ended exploration"
+      ],
+      "objectives": [
+        "Identify core elements of complex problems",
+        "Apply systematic problem-solving strategies",
+        "Evaluate solution effectiveness"
+      ]
+    },
+    {
+      "phase": "problem_solving through collaborative",
+      "activities": [
+        "Peer teaching sessions",
+        "Group problem-solving",
+        "Collaborative projects"
+      ],
+      "objectives": [
+        "Identify core elements of complex problems",
+        "Apply systematic problem-solving strategies",
+        "Evaluate solution effectiveness"
+      ]
+    }
+  ]
+}

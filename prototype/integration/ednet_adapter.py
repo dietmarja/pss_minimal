@@ -1,99 +1,125 @@
 # File: prototype/integration/ednet_adapter.py
 
-import torch
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Tuple, Optional
-from datetime import datetime
-from dataclasses import dataclass
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
+from pathlib import Path
 import logging
+from typing import List, Dict, Tuple
 
 logger = logging.getLogger(__name__)
 
-@dataclass
-class EdNetInteraction:
-    timestamp: datetime
-    user_id: str
-    question_id: str
-    correct: bool
-    response_time: float
-    embedding: torch.Tensor
-    topic: str
-    concept_embeddings: torch.Tensor
-
 class EdNetAdapter:
-    def __init__(self):
-        self.scaler = StandardScaler()
-        self.pca = None  # Will be initialized after seeing the data
-        self.concept_embeddings = {}
-        self.topic_vectors = {}
-        self.interaction_patterns = []
+    """Processes EdNet-KT1 data to inform interaction patterns."""
     
-    def process_interactions(self, df: pd.DataFrame) -> List[EdNetInteraction]:
-        """Convert EdNet data to interaction format with embeddings."""
-        logger.info("Processing interactions...")
+    def __init__(self):
+        self.interaction_patterns = None
+        self.concept_space = None
         
-        # Create feature matrix for embedding
-        feature_matrix = self._create_feature_matrix(df)
-        
-        # Initialize PCA based on data dimensions
-        n_features = feature_matrix.shape[1]
-        n_components = min(n_features - 1, 10)  # Use at most 10 components
-        self.pca = PCA(n_components=n_components)
-        
-        # Scale features
-        scaled_features = self.scaler.fit_transform(feature_matrix)
-        
-        # Reduce dimensionality
-        reduced_features = self.pca.fit_transform(scaled_features)
-        logger.info(f"Reduced features from {n_features} to {n_components} dimensions")
-        
-        # Create embeddings
-        interactions = []
-        for i, row in df.iterrows():
-            interaction = self._create_interaction(row, reduced_features[i])
-            interactions.append(interaction)
-            self.interaction_patterns.append(interaction)
-        
-        logger.info(f"Processed {len(interactions)} interactions")
-        return interactions
-
-    def _create_feature_matrix(self, df: pd.DataFrame) -> np.ndarray:
-        """Create feature matrix for embedding."""
-        # Extract numerical features
-        features = [
-            df['correct'].astype(float),
-            df['response_time'].fillna(0)
-        ]
-        
-        # Add topic encoding
-        topic_dummies = pd.get_dummies(df['topic'], prefix='topic')
-        features.extend([topic_dummies[col] for col in topic_dummies.columns])
-        
-        return np.column_stack(features)
-
-    def _create_interaction(self, row: pd.Series, reduced_features: np.ndarray) -> EdNetInteraction:
-        """Create single interaction with embeddings."""
-        return EdNetInteraction(
-            timestamp=row['timestamp'],
-            user_id=row['user_id'],
-            question_id=str(row['question_id']),
-            correct=bool(row['correct']),
-            response_time=float(row['response_time']) if pd.notna(row['response_time']) else 0.0,
-            embedding=torch.tensor(reduced_features, dtype=torch.float32),
-            topic=str(row['topic']),
-            concept_embeddings=torch.tensor(reduced_features, dtype=torch.float32)
-        )
-
-    def load_ednet_data(self, filepath: str) -> pd.DataFrame:
-        """Load and preprocess EdNet data."""
+    async def load_ednet_data(self, filepath: str) -> None:
+        """Load and process EdNet-KT1 dataset."""
         logger.info(f"Loading EdNet data from {filepath}")
-        df = pd.read_csv(filepath)
         
-        # Convert timestamps
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        # Load data
+        data = pd.read_csv(filepath)
+        logger.info(f"Loaded {len(data)} interactions")
         
-        logger.info(f"Loaded {len(df)} interactions")
-        return df
+        # Extract interaction patterns
+        self.interaction_patterns = self._extract_patterns(data)
+        
+        # Build concept space from successful learning sequences
+        self.concept_space = self._build_concept_space(data)
+        
+        logger.info("EdNet data processing complete")
+        
+    def _extract_patterns(self, data: pd.DataFrame) -> np.ndarray:
+        """Extract emergent interaction patterns from data."""
+        # Group by user and sort by timestamp
+        sequences = data.groupby('user_id').agg(list).reset_index()
+        
+        # Convert sequences to embeddings
+        pattern_embeddings = []
+        for _, row in sequences.iterrows():
+            # Create sequence embedding
+            sequence_embed = self._embed_sequence(
+                row['question_id'],
+                row['correct'],
+                row['elapsed_time']
+            )
+            pattern_embeddings.append(sequence_embed)
+            
+        return np.array(pattern_embeddings)
+        
+    def _build_concept_space(self, data: pd.DataFrame) -> np.ndarray:
+        """Build concept space from successful learning sequences."""
+        # Focus on successful learning sequences
+        success_mask = data.groupby('user_id')['correct'].mean() > 0.7
+        successful_sequences = data[data['user_id'].isin(success_mask[success_mask].index)]
+        
+        # Extract concept relationships
+        concept_embeddings = []
+        for _, group in successful_sequences.groupby('user_id'):
+            # Create concept embedding
+            concept_embed = self._embed_concepts(
+                group['question_id'],
+                group['correct']
+            )
+            concept_embeddings.append(concept_embed)
+            
+        return np.array(concept_embeddings)
+        
+    def _embed_sequence(self, 
+                       questions: List[int], 
+                       outcomes: List[int],
+                       times: List[int]) -> np.ndarray:
+        """Create embedding for interaction sequence."""
+        # Combine features
+        sequence = np.column_stack([questions, outcomes, times])
+        
+        # Create embedding (simplified for example)
+        embedding = np.mean(sequence, axis=0)
+        # In practice, use more sophisticated embedding technique
+        
+        return embedding
+        
+    def _embed_concepts(self,
+                       questions: List[int],
+                       outcomes: List[int]) -> np.ndarray:
+        """Create embedding for concept relationships."""
+        # Combine features
+        concepts = np.column_stack([questions, outcomes])
+        
+        # Create embedding (simplified for example)
+        embedding = np.mean(concepts, axis=0)
+        # In practice, use more sophisticated embedding technique
+        
+        return embedding
+        
+    def get_interaction_pattern(self, 
+                              current_state: np.ndarray) -> Tuple[float, np.ndarray]:
+        """Find most similar interaction pattern."""
+        if self.interaction_patterns is None:
+            return 0.5, np.random.randn(768)
+            
+        # Compute similarities
+        similarities = np.dot(self.interaction_patterns, current_state)
+        
+        # Get most similar pattern
+        best_idx = np.argmax(similarities)
+        confidence = float(similarities[best_idx])
+        
+        return confidence, self.interaction_patterns[best_idx]
+        
+    def get_concept_guidance(self, 
+                           current_state: np.ndarray) -> Tuple[float, np.ndarray]:
+        """Get concept guidance from similar successful sequences."""
+        if self.concept_space is None:
+            return 0.5, np.random.randn(768)
+            
+        # Compute similarities
+        similarities = np.dot(self.concept_space, current_state)
+        
+        # Get most similar concept pattern
+        best_idx = np.argmax(similarities)
+        confidence = float(similarities[best_idx])
+        
+        return confidence, self.concept_space[best_idx]
