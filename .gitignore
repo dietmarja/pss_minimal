@@ -1,1 +1,7 @@
+# Add patterns to .gitignoreo
+# echo "venv/" >> .gitignore
+# echo "*.dylib" >> .gitignore
+
 env/
+venv/
+*.dylib
