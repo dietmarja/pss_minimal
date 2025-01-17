@@ -1,0 +1,129 @@
+{
+  "timestamp": "2025-01-16T20:07:25.298402",
+  "topic": "Metacognition in Learning",
+  "events": [
+    {
+      "timestamp": "2025-01-16T20:07:25.274316",
+      "level": "observation",
+      "source": "experiential",
+      "content": "How does this relate to your experience?",
+      "confidence": 0.5,
+      "understanding_depth": 0.1,
+      "student_response": "I think I see something..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274349",
+      "level": "observation",
+      "source": "experiential",
+      "content": "How does this relate to your experience?",
+      "confidence": 0.6,
+      "understanding_depth": 0.12000000000000001,
+      "student_response": "This seems complicated..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274367",
+      "level": "observation",
+      "source": "experiential",
+      "content": "What real examples come to mind?",
+      "confidence": 0.72,
+      "understanding_depth": 0.14400000000000002,
+      "student_response": "I think I see something..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274388",
+      "level": "pattern",
+      "source": "constructivist",
+      "content": "These patterns suggest a structure...",
+      "confidence": 0.8640000000000001,
+      "understanding_depth": 0.1728,
+      "student_response": "This connects to..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274404",
+      "level": "pattern",
+      "source": "constructivist",
+      "content": "These patterns suggest a structure...",
+      "confidence": 0.9,
+      "understanding_depth": 0.20736000000000002,
+      "student_response": "This connects to..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274418",
+      "level": "pattern",
+      "source": "constructivist",
+      "content": "This framework helps us understand...",
+      "confidence": 0.9,
+      "understanding_depth": 0.24883200000000003,
+      "student_response": "I can apply this to..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274434",
+      "level": "pattern",
+      "source": "constructivist",
+      "content": "We can build on these connections...",
+      "confidence": 0.9,
+      "understanding_depth": 0.29859840000000004,
+      "student_response": "The principle here is..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274451",
+      "level": "concept",
+      "source": "socratic",
+      "content": "What principle might explain these patterns?",
+      "confidence": 0.9,
+      "understanding_depth": 0.30000000000000004,
+      "student_response": "This clearly shows..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274465",
+      "level": "concept",
+      "source": "socratic",
+      "content": "What principle might explain these patterns?",
+      "confidence": 0.9,
+      "understanding_depth": 0.30000000000000004,
+      "student_response": "This clearly shows..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274479",
+      "level": "concept",
+      "source": "socratic",
+      "content": "How would you explain this to someone else?",
+      "confidence": 0.9,
+      "understanding_depth": 0.30000000000000004,
+      "student_response": "This clearly shows..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274497",
+      "level": "principle",
+      "source": "socratic",
+      "content": "What are the implications of this understanding?",
+      "confidence": 0.9,
+      "understanding_depth": 0.30000000000000004,
+      "student_response": "The principle here is..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274512",
+      "level": "principle",
+      "source": "socratic",
+      "content": "How could this principle be applied?",
+      "confidence": 0.9,
+      "understanding_depth": 0.30000000000000004,
+      "student_response": "This clearly shows..."
+    },
+    {
+      "timestamp": "2025-01-16T20:07:25.274526",
+      "level": "principle",
+      "source": "socratic",
+      "content": "How could this principle be applied?",
+      "confidence": 0.9,
+      "understanding_depth": 0.30000000000000004,
+      "student_response": "I can apply this to..."
+    }
+  ],
+  "understanding": {
+    "observation": 0.36400000000000005,
+    "pattern": 0.9275904000000001,
+    "concept": 0.9000000000000001,
+    "principle": 0.9000000000000001
+  }
+}

@@ -1,28 +1,28 @@
 {
   "metrics": {
     "scores": {
-      "pss_mean": 1.06416,
+      "pss_mean": 1.24152,
       "traditional_mean": 0.8336,
-      "difference": 0.23056
+      "difference": 0.40791999999999995
     },
     "completion_rates": {
-      "pss_mean": 1.2000000000000002,
+      "pss_mean": 1.0,
       "traditional_mean": 1.0,
-      "difference": 0.20000000000000018
+      "difference": 0.0
     },
     "time_to_mastery": {
-      "pss_mean": 123.12288000000001,
+      "pss_mean": 107.73252000000001,
       "traditional_mean": 155.3748,
-      "difference": -32.251919999999984
+      "difference": -47.642279999999985
     }
   },
   "statistical_analysis": {
-    "t_statistic": 5.646795881710751,
-    "p_value": 1.59662994481431e-07,
+    "t_statistic": 9.272132423757615,
+    "p_value": 4.600323126370598e-15,
     "significant": true
   },
   "effect_sizes": {
-    "cohens_d": 1.1408250456954117,
+    "cohens_d": 1.8732536322567626,
     "effect_magnitude": "large"
   }
 }

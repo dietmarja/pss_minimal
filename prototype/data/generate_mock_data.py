@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def generate_mock_ednet_data(num_students: int = 100, 
+def generate_mock_ednet_data(num_students: int = 1000, 
                            interactions_per_student: int = 50) -> pd.DataFrame:
     """Generate mock EdNet-KT1 data for testing."""
     logger.info(f"Generating mock data for {num_students} students")

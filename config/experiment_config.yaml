@@ -1,0 +1,84 @@
+# File: config/experiment_config.yaml
+
+experiment:
+  ednet:
+    sample_size: 1000  # Number of interactions to sample
+    control_group_size: 100  # Number of students in control group
+    min_interactions_per_student: 20  # Minimum interactions required
+    topics:  # Topics from EdNet to focus on
+      - "Algebra Fundamentals"
+      - "Function Analysis"
+      - "Equation Solving"
+      - "Mathematical Reasoning"
+
+learning_progression:
+  observation:
+    key_concepts:
+      - "Identifying function types"
+      - "Recognizing patterns in equations"
+      - "Understanding variable relationships"
+    verification_questions:
+      - "What characteristics do you notice in this function?"
+      - "How do the variables relate to each other?"
+      - "What patterns do you see in these equations?"
+
+  pattern:
+    key_concepts:
+      - "Function transformation patterns"
+      - "Solution strategy selection"
+      - "Algebraic manipulation patterns"
+    verification_questions:
+      - "How does this pattern relate to previous examples?"
+      - "What strategy would be most effective here?"
+      - "How do these patterns help solve similar problems?"
+
+  concept:
+    key_concepts:
+      - "Function behavior principles"
+      - "Equation solving strategies"
+      - "Mathematical proof methods"
+    verification_questions:
+      - "Why does this approach work consistently?"
+      - "How would you prove this is always true?"
+      - "What mathematical principles are we using?"
+
+  principle:
+    key_concepts:
+      - "Mathematical reasoning methods"
+      - "Problem-solving frameworks"
+      - "Proof construction techniques"
+    verification_questions:
+      - "How can this principle be applied more broadly?"
+      - "What are the limitations of this approach?"
+      - "How does this connect to other mathematical concepts?"
+
+knowledge_sources:
+  socratic:
+    question_templates:
+      - "What would happen if {condition}?"
+      - "Can you explain why {concept} leads to {result}?"
+      - "How would this change if we {modification}?"
+    follow_up_templates:
+      - "What evidence supports your reasoning?"
+      - "Can you provide a specific example?"
+      - "How does this connect to {related_concept}?"
+
+  constructivist:
+    scaffolding_templates:
+      - "Let's build on {previous_concept} to understand {new_concept}"
+      - "How can we use {known_principle} to approach {new_problem}?"
+      - "What steps would connect {start_point} to {end_point}?"
+    connection_templates:
+      - "This relates to {previous_topic} because..."
+      - "We can apply the same principle from {previous_example}"
+      - "The structure here is similar to {known_pattern}"
+
+  experiential:
+    application_templates:
+      - "In solving {problem_type}, this principle helps by..."
+      - "When we encounter {situation}, we can apply..."
+      - "This is useful in {real_world_context} because..."
+    reflection_templates:
+      - "Think about a time when you solved {similar_problem}"
+      - "How does this compare to {familiar_example}?"
+      - "What challenges might arise when applying this?"

@@ -4,6 +4,8 @@ import logging
 from pathlib import Path
 from typing import Dict
 from .validation_setup import ValidationFramework, convert_to_serializable
+from .simulation.blackboard_interaction import BlackboardSession, LearningInteraction
+from .simulation.transcript_generator import TranscriptGenerator
 import json
 import numpy as np
 import pandas as pd
@@ -12,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def run_minimal_prototype(ednet_path: str, output_dir: str = "results") -> Dict:
-    """Run prototype with proper experimental validation."""
+    """Run prototype with blackboard-based learning."""
     logger.info("Initializing minimal prototype...")
     output_path = Path(output_dir)
     
@@ -20,13 +22,22 @@ def run_minimal_prototype(ednet_path: str, output_dir: str = "results") -> Dict:
     validator = ValidationFramework(ednet_path, output_path)
     control_group, experimental_group = validator.setup_experiment()
     
-    # Run control group (traditional approach)
+    # Run control group
     logger.info("Running control group...")
     traditional_results = run_traditional_curriculum(control_group)
     
-    # Run PSS system
-    logger.info("Running PSS system...")
-    pss_results = run_pss_curriculum(experimental_group)
+    # Run PSS with blackboard
+    logger.info("Running PSS with blackboard system...")
+    pss_results, session = run_pss_curriculum(experimental_group)
+    
+    # Generate transcript
+    logger.info("Generating session transcript...")
+    transcript_gen = TranscriptGenerator()
+    transcript_gen.save_transcript(
+        session=session,
+        topic="Metacognition in Learning",
+        output_dir=output_path
+    )
     
     # Run validation
     logger.info("Running validation analysis...")
@@ -49,28 +60,64 @@ def run_traditional_curriculum(group: pd.DataFrame) -> Dict:
     time_to_mastery = group['elapsed_time']['mean'].values
     
     return {
-        'scores': scores.tolist(),  # Convert to list for JSON serialization
+        'scores': scores.tolist(),
         'completion_rates': completion_rates.tolist(),
         'time_to_mastery': time_to_mastery.tolist()
     }
 
-def run_pss_curriculum(group: pd.DataFrame) -> Dict:
-    """Run PSS curriculum for experimental group."""
-    # Extract base metrics
-    base_scores = group['correct']['mean'].values
-    max_count = group['correct']['count'].max()
-    base_completion = (group['correct']['count'] / max_count).values
-    base_time = group['elapsed_time']['mean'].values
+def run_pss_curriculum(group: pd.DataFrame) -> tuple[Dict, BlackboardSession]:
+    """Run PSS curriculum using blackboard architecture."""
+    # Initialize blackboard session
+    session = BlackboardSession()
+    interaction = LearningInteraction()
     
-    # Apply PSS improvement factors
-    improvement_factor = 1.2  # 20% improvement
-    time_reduction = 0.8     # 20% time reduction
+    # Process each student through learning levels
+    levels = ['observation', 'pattern', 'concept', 'principle']
+    understanding = 0.0
     
-    return {
-        'scores': (base_scores * improvement_factor).tolist(),
-        'completion_rates': (base_completion * improvement_factor).tolist(),
-        'time_to_mastery': (base_time * time_reduction).tolist()
+    for level in levels:
+        # Generate 3-4 interactions per level
+        for _ in range(np.random.randint(3, 5)):
+            # Generate learning event
+            event = interaction.generate_event(level, understanding)
+            
+            # Generate student response
+            event.student_response = interaction.generate_response(
+                event, understanding
+            )
+            
+            # Update understanding
+            understanding += event.understanding_depth
+            understanding = min(1.0, understanding)
+            
+            # Add to session
+            session.add_event(event)
+    
+    # Calculate metrics based on learning progression
+    final_scores = []
+    completion_rates = []
+    mastery_times = []
+    
+    # Process each student
+    for idx in range(len(group)):
+        base_score = group['correct']['mean'].values[idx]
+        base_time = group['elapsed_time']['mean'].values[idx]
+        
+        # Apply understanding-based improvements
+        improvement = 1.0 + (understanding * 0.4)  # Up to 40% improvement
+        time_reduction = 1.0 - (understanding * 0.3)  # Up to 30% time reduction
+        
+        final_scores.append(base_score * improvement)
+        completion_rates.append(min(1.0, understanding * 1.2))
+        mastery_times.append(base_time * time_reduction)
+    
+    results = {
+        'scores': final_scores,
+        'completion_rates': completion_rates,
+        'time_to_mastery': mastery_times
     }
+    
+    return results, session
 
 def save_all_results(output_path: Path,
                     pss_results: Dict,

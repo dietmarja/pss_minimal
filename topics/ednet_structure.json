@@ -1,0 +1,98 @@
+{
+  "concepts": {
+    "linear_equations": {
+      "difficulty": 0.5709757754131763,
+      "prerequisites": [],
+      "avg_time": 89.53888385782206,
+      "total_attempts": 17668
+    },
+    "quadratic_equations": {
+      "difficulty": 0.8465499485066941,
+      "prerequisites": [
+        "function_analysis"
+      ],
+      "avg_time": 107.1074493649159,
+      "total_attempts": 2913
+    },
+    "function_analysis": {
+      "difficulty": 0.9166666666666666,
+      "prerequisites": [
+        "quadratic_equations"
+      ],
+      "avg_time": 112.91666666666667,
+      "total_attempts": 12
+    },
+    "algebra_basics": {
+      "difficulty": 0.20087054102764645,
+      "prerequisites": [],
+      "avg_time": 71.46774577481553,
+      "total_attempts": 29407
+    }
+  },
+  "relationships": {
+    "linear_equations_to_quadratic_equations": {
+      "connects": [
+        "linear_equations",
+        "quadratic_equations"
+      ],
+      "strength": 0.04917087448170823,
+      "bidirectional": false
+    },
+    "linear_equations_to_algebra_basics": {
+      "connects": [
+        "linear_equations",
+        "algebra_basics"
+      ],
+      "strength": 0.2342384798172011,
+      "bidirectional": false
+    },
+    "quadratic_equations_to_linear_equations": {
+      "connects": [
+        "quadratic_equations",
+        "linear_equations"
+      ],
+      "strength": 0.046948014880388855,
+      "bidirectional": false
+    },
+    "quadratic_equations_to_function_analysis": {
+      "connects": [
+        "quadratic_equations",
+        "function_analysis"
+      ],
+      "strength": 0.31057685807358015,
+      "bidirectional": false
+    },
+    "quadratic_equations_to_algebra_basics": {
+      "connects": [
+        "quadratic_equations",
+        "algebra_basics"
+      ],
+      "strength": 0.02265882690377169,
+      "bidirectional": false
+    },
+    "function_analysis_to_quadratic_equations": {
+      "connects": [
+        "function_analysis",
+        "quadratic_equations"
+      ],
+      "strength": 0.3105051529251504,
+      "bidirectional": false
+    },
+    "algebra_basics_to_linear_equations": {
+      "connects": [
+        "algebra_basics",
+        "linear_equations"
+      ],
+      "strength": 0.24955947986500454,
+      "bidirectional": false
+    },
+    "algebra_basics_to_quadratic_equations": {
+      "connects": [
+        "algebra_basics",
+        "quadratic_equations"
+      ],
+      "strength": 0.024809981356661407,
+      "bidirectional": false
+    }
+  }
+}
