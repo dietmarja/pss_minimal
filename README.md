@@ -78,6 +78,22 @@ python -m prototype.data.run_analyzer path/to/ednet.csv
 python -m prototype.run_minimal --ednet_path path/to/ednet.csv
 ```
 
+
+
+### 5-fold Validation
+```bash
+# Run 5-fold validation
+python -m prototype.run_validation mock_ednet_kt1.csv --n_folds 5
+
+# Run with larger groups
+python -m prototype.run_validation mock_ednet_kt1.csv --group_size 200
+
+# Run more folds for better statistics
+python -m prototype.run_validation mock_ednet_kt1.csv --n_folds 10
+```
+
+
+
 ## Example Output Files
 
 ### Knowledge Structure
