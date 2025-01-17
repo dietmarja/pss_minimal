@@ -142,6 +142,14 @@ results/
     ├── metrics.json     # Validation metrics
     ├── report.md        # Human-readable report
     └── visualizations/  # Generated plots
+
+topics/
+├── analysis_summary.json
+├── ednet_structure.json
+├── knowledge_structure.png
+├── learning_progression.png
+
+
 ```
 
 Each component serves a specific purpose in the AI-first architecture:
@@ -472,17 +480,3 @@ While we have metrics, we don't have:
 
 ### Transcript (partially done)
 We're generating interactions but not saving them in a readable format. We already have added the method `save_transcript` to `simulation.py`. But it does not seem to produce a transcript.
-
-## Misc
-**Code Presentation**. When you return code, make sure that:
-- Each code box has a path and file name (commented out) in line 1
-- The download link offers the EXACT name of the file to be downloaded. For instance, give me "run_minimal.py" and not "run-minimal.py".
-- Never hard code what could vary, e.g., code must be content-agnostic — do not mix code and content and do not hard code the number of students
-
-**Do what Reviewers like.**
-A previous version of the paper received this review:
-"The experimental validation relies heavily on simulated personas without real-world validation. The statistical analysis lacks proper control groups and baseline comparisons, and the improvement score metrics require more rigorous validation."
-This time we have to avoid those issues.
-
-## Reminder
-Always maintain an AI-first approach. So do not drift into scripted interactions or into piling up methods.
