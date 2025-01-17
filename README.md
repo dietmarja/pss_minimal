@@ -138,6 +138,48 @@ Time Reduction: 6.3s ± 0.8s
 Effect Size (Cohen's d): 0.77 ± 0.04
 ```
 
+
+## An Example 
+Running an Analysis with PSS proceeds in several steps
+
+
+### 1. Analyze EdNet Data
+
+```
+python -m prototype.data.run_analyzer mock_ednet_kt1_1000.csv
+```
+
+
+- Analyzes the EdNet dataset structure
+- Extracts concept relationships and difficulties
+- Generates ednet_structure.json (knowledge structure)
+- Creates analysis_summary.json (statistical overview)
+- Creates visualization files (knowledge_structure.png, learning_progression.png)
+
+### 2. Run Cross-Validation
+```
+python -m prototype.run_validation mock_ednet_kt1_1000.csv --n_folds 5```
+```
+
+- Performs 5-fold cross-validation
+- Compares PSS system vs traditional approach
+- Generates statistical results (p-values, effect sizes)
+- Creates cross_validation_results.json
+
+
+### 3. Generate Transcript
+```
+python -m prototype.run_transcript --structure topics/ednet_structure.json```
+```
+- Get knowledge structure from EdNet
+- Carry out statistical validation of the system
+- Generate a etailed learning transcript showing  learning progression
+
+
+
+
+
+
 ## Example Output Files
 
 ### Knowledge Structure
