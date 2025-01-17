@@ -1,6 +1,6 @@
 # Persona Simulation System (PSS)
 
-An AI-first approach to teaching simulation and curriculum design, validated against the EdNet-KT1 dataset.
+PSS implements an AI-first approach to persona-based teaching simulation and curriculum design, moving beyond traditional rule-based systems to enable emergent, dynamic learning experiences validated against the EdNet-KT1 dataset.
 
 ## Key Features
 
