@@ -143,38 +143,51 @@ Effect Size (Cohen's d): 0.77 ± 0.04
 Running an Analysis with PSS proceeds in several steps
 
 
-### 1. Analyze EdNet Data
+### 1. Analyze EEDI Data
+First, run the EEDI analysis to get the structural understanding:
 
 ```
-python -m prototype.data.run_analyzer mock_ednet_kt1_1000.csv
+python -m prototype.data.eedi_analyzer all_train --output_dir analysis
 ```
 
+This examines the EEDI dataset structure. 
+It creates analysis_results.json which contains:
 
-- Analyzes the EdNet dataset structure
-- Extracts concept relationships and difficulties
-- Generates ednet_structure.json (knowledge structure)
-- Creates analysis_summary.json (statistical overview)
-- Creates visualization files (knowledge_structure.png, learning_progression.png)
+- Concept relationships
+- Misconception patterns
+- Question complexity metrics
+
+<!-- 
+
+-->
 
 ### 2. Run Cross-Validation
-```
-python -m prototype.run_validation mock_ednet_kt1_1000.csv --n_folds 5```
-```
 
-- Performs 5-fold cross-validation
-- Compares PSS system vs traditional approach
-- Generates statistical results (p-values, effect sizes)
-- Creates cross_validation_results.json
+Cross-validation and a number post hoc test are initiated via this line
+```
+python -m prototype.validation.run_validation all_train.csv
+
+```
+Basically, run_validation.py is a wrapper for calling eedi_cross_validator.py and for generation result explanations. Overall, it
+
+- performs 5-fold cross-validation
+- compares PSS system vs traditional approach
+- generates statistical results (p-values, effect sizes)
+- creates cross_validation_results.json
 
 
 ### 3. Generate Transcript
+
+
+
+
 ```
 python -m prototype.run_transcript --structure topics/ednet_structure.json```
 ```
-- Get knowledge structure from EdNet
-- Carry out statistical validation of the system
-- Generate a etailed learning transcript showing  learning progression
+This needs attention:
 
+1. The transcript is too short, not interactive and mechanic while it should reflect an authentic educationl interaction
+2. Transcript for all 4 treatment groups and for the control condition are needed.  
 
 
 
