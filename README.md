@@ -18,18 +18,18 @@ source pss-env/bin/activate  # On Windows: pss-env\Scripts\activate
 ```
 
 
-## Clone repository
+## Clone Repository
 ```
 git clone https://github.com/yourusername/pss.git
 cd pss
 ```
 
-## Install dependencies
+## Install Dependencies
 ```
 pip install -r requirements.txt
 ```
 
-## Install the package in development mode
+## Install  Package in Development Mode
 ```
 pip install -e .
 ```
@@ -107,6 +107,7 @@ done
 
 
 # Output Dirctory Structure
+```
 results/
 ├── validation_results/
 │   ├── cross_validation_results.json
@@ -119,10 +120,10 @@ results/
 └── analysis/
     ├── analysis_results.json
     └── figures/
-
+```
 
 # Improving Statistical Results
-To improve the current statistical results,  the following methodological enhancements are required
+To improve the current statistical results the following methodological enhancements are required
 
 ## Enhance Sample Size
 ```
