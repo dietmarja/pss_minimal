@@ -9,28 +9,192 @@ PSS transforms static EEDI misconception data into dynamic teaching simulations 
 - Constructivist teaching (concept building)
 - Experiential teaching (practical application)
 
-## Installation
+# Installation and housekeeping
 
 
-# Create new virtual environment
+## Create new virtual environment
 ```python -m venv pss-env
 source pss-env/bin/activate  # On Windows: pss-env\Scripts\activate
 ```
 
 
-# Clone repository
+## Clone repository
+```
 git clone https://github.com/yourusername/pss.git
 cd pss
+```
 
-# Install dependencies
+## Install dependencies
+```
 pip install -r requirements.txt
+```
 
-# Install the package in development mode
+## Install the package in development mode
+```
 pip install -e .
+```
 
 
+# Analyses
+
+## Data Preparation
+```
+# Prepare EEDI dataset
+python -m prototype.data.eedi_analyzer \
+    --input_file path/to/all_train.csv \
+    --output_dir analysis
+
+# Generate mock data for testing (optional)
+python -m prototype.data.generate_mock_data \
+    --size 1000 \
+    --output mock_eedi_sample.csv
+```
+
+
+## Basic Validation
+```
+# Run basic cross-validation
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --output_dir validation_results \
+    --n_folds 5
+
+# Run with increased sample size
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --output_dir validation_results \
+    --n_folds 10 \
+    --group_size 200
+```
+
+## Advanced Analysis Options
+```
+# Run with specific seed for reproducibility
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --seed 42 \
+    --output_dir validation_results
+
+# Run with enhanced stratification
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --stratify_by misconception_type \
+    --output_dir validation_results
+
+# Generate detailed analysis report
+python -m prototype.analysis.generate_report \
+    validation_results/cross_validation_results.json \
+    --output analysis_report.pdf
+```
+
+
+## Transcript Generation
+```
+# Generate teaching interaction transcripts
+python -m prototype.run_transcript \
+    --structure topics/ednet_structure.json \
+    --approach socratic \
+    --output transcripts/
+
+# Generate transcripts for all approaches
+for approach in socratic constructive experiential; do
+    python -m prototype.run_transcript \
+        --structure topics/ednet_structure.json \
+        --approach $approach \
+        --output transcripts/$approach/
+done
+```
+
+
+# Output Dirctory Structure
+results/
+├── validation_results/
+│   ├── cross_validation_results.json
+│   ├── fold_*/
+│   │   └── metrics.json
+├── transcripts/
+│   ├── socratic/
+│   ├── constructive/
+│   ├── experiential/
+└── analysis/
+    ├── analysis_results.json
+    └── figures/
+
+
+# Improving Statistical Results
+To improve the current statistical results,  the following methodological enhancements are required
+
+## Enhance Sample Size
+```
+# Run with larger group size and more folds
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --n_folds 10 \
+    --group_size 500 \
+    --output_dir validation_results_enhanced
+```
+
+
+
+## Refined Stratification
+```
+# Run with enhanced stratification options
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --stratify_by "misconception_type,difficulty_level" \
+    --balanced_groups true \
+    --output_dir validation_results_stratified
+```
+
+## Pattern Matching Improvements
+```
+# Run with enhanced pattern matching
+python -m prototype.validation.run_validation \
+    all_train.csv \
+    --pattern_matching_threshold 0.8 \
+    --misconception_min_occurrence 5 \
+    --output_dir validation_results_patterns
+```
+
+
+# Contributing
+See CONTRIBUTING.md 
+
+# License
+MIT
 
 # Development Roadmap
+
+
+
+Suggestions for Improving Statistical Analysis:
+
+1. **Methodological Improvements:**
+   - Increase minimum group size to 500 for better statistical power
+   - Implement bootstrap resampling for effect size estimation
+   - Add Bayesian analysis for small sample sizes
+   - Enhance stratification based on misconception types
+
+2. **Code Changes Needed:**
+```python
+# In eedi_cross_validator.py
+def _create_balanced_groups(self, construct_stats: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Enhanced group creation with better stratification"""
+    # Implement multiple stratification levels
+    strata = self._create_multi_level_strata(construct_stats)
+    
+    # Increase minimum group size
+    min_group_size = max(500, len(construct_stats) // 4)
+    
+    # Implement balanced sampling within each stratum
+    control_group, exp_group = self._balanced_stratified_sampling(
+        construct_stats,
+        strata,
+        min_group_size=min_group_size
+    )
+    
+    return control_group, exp_group
+```
 
 ## Priority 1: Enhanced Teaching Personas
 - Develop intelligent teaching personas beyond simple pattern matching
