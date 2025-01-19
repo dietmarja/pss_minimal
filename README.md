@@ -1,228 +1,104 @@
 # Persona Simulation System (PSS)
 
-PSS implements an AI-first approach to persona-based teaching simulation and curriculum design, moving beyond traditional rule-based systems to enable emergent, dynamic learning experiences validated against the EdNet-KT1 dataset.
+An AI-first approach to teaching strategy evaluation using simulated teacher-student interactions based on the EEDI dataset.
 
-## Key Features
+## Overview
 
-### AI-First Architecture
-- Dynamic knowledge representation through emergent patterns
-- Blackboard architecture with specialized knowledge sources
-- No predefined rules or static relationships
-- Real-time adaptation based on learning interactions
+PSS transforms static EEDI misconception data into dynamic teaching simulations to evaluate different pedagogical approaches:
+- Socratic teaching (dialectical questioning)
+- Constructivist teaching (concept building)
+- Experiential teaching (practical application)
 
-### EdNet Integration
-- Validated against 1M+ real student interactions
-- Automatic discovery of concept relationships
-- Data-driven difficulty progression
-- Empirically grounded learning paths
+## Installation
 
-### Knowledge Structure
-- Dynamically evolving concept space
-- Relationship strengths based on actual learning patterns
-- Prerequisite discovery through performance analysis
-- Natural learning progression emergence
 
-## Validation Results
-
-Our system demonstrates significant improvements in learning outcomes:
-- 23% improvement in learning rate (p < 0.01)
-- 31% reduction in time to concept mastery
-- Strong relationship patterns (strength > 0.2) between key concepts
-
-## Project Structure
-```
-prototype/
-├── models/              # Core data structures
-├── simulation/          # Blackboard simulation
-├── evaluation/          # Pattern-based evaluation
-├── integration/         # EdNet data integration
-└── visualization/       # Learning analytics
+# Create new virtual environment
+```python -m venv pss-env
+source pss-env/bin/activate  # On Windows: pss-env\Scripts\activate
 ```
 
-## Getting Started
 
-### Installation
-```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate
+# Clone repository
+git clone https://github.com/yourusername/pss.git
+cd pss
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Install package
+# Install the package in development mode
 pip install -e .
-```
-
-### Basic Usage
-```python
-from prototype.simulation import EmergentSimulation
-from prototype.data import EdNetAnalyzer
-
-# Initialize components
-simulator = EmergentSimulation()
-analyzer = EdNetAnalyzer("path/to/ednet.csv")
-
-# Run simulation with EdNet validation
-results = simulator.run_session(
-    ednet_data=analyzer.analyze_structure()
-)
-```
-
-### Running Analysis
-```bash
-# Analyze EdNet structure
-python -m prototype.data.run_analyzer path/to/ednet.csv
-
-# Run simulation
-python -m prototype.run_minimal --ednet_path path/to/ednet.csv
-```
-
-### 5-fold Validation
-```bash
-# Run 5-fold validation
-python -m prototype.run_validation mock_ednet_kt1.csv --n_folds 5
-
-# Run with larger groups
-python -m prototype.run_validation mock_ednet_kt1.csv --group_size 200
-
-# Run more folds for better statistics
-python -m prototype.run_validation mock_ednet_kt1.csv --n_folds 10
-```
-
-## Cross-Validation Framework
-
-The PSS system includes a robust cross-validation framework for reliable performance evaluation. The framework:
-
-- Implements n-fold validation with stratified sampling
-- Ensures fair comparison through matched control groups
-- Provides statistical confidence measures
-- Generates comprehensive metrics across folds
-
-### Running Cross-Validation
-
-```bash
-# Basic 5-fold validation
-python -m prototype.run_validation path/to/ednet.csv --n_folds 5
-
-# Customize group size and random seed
-python -m prototype.run_validation path/to/ednet.csv \
-    --n_folds 5 \
-    --group_size 100 \
-    --seed 42
-```
-
-### Output Metrics
-
-Cross-validation generates detailed performance metrics:
-
-- Learning improvement rates with standard deviations
-- Time-to-mastery reductions across folds
-- Effect sizes (Cohen's d)
-- Statistical significance (p-values)
-
-Results are saved in JSON format for further analysis:
-```
-results/
-├── cross_validation_results.json  # Aggregated results
-└── fold_*/                       # Individual fold results
-    └── metrics.json
-```
-
-### Example Results
-
-Recent validation on EdNet-KT1 dataset (n=5 folds):
-```
-Learning Improvement: 7.3% ± 0.4% (p < 0.001)
-Time Reduction: 6.3s ± 0.8s
-Effect Size (Cohen's d): 0.77 ± 0.04
-```
-
-
-## An Example 
-Running an Analysis with PSS proceeds in several steps
-
-
-### 1. Analyze EEDI Data
-First, run the EEDI analysis to get the structural understanding:
-
-```
-python -m prototype.data.eedi_analyzer all_train --output_dir analysis
-```
-
-This examines the EEDI dataset structure. 
-It creates analysis_results.json which contains:
-
-- Concept relationships
-- Misconception patterns
-- Question complexity metrics
-
-<!-- 
-
--->
-
-### 2. Run Cross-Validation
-
-Cross-validation and a number post hoc test are initiated via this line
-```
-python -m prototype.validation.run_validation all_train.csv
-
-```
-Basically, run_validation.py is a wrapper for calling eedi_cross_validator.py and for generation result explanations. Overall, it
-
-- performs 5-fold cross-validation
-- compares PSS system vs traditional approach
-- generates statistical results (p-values, effect sizes)
-- creates cross_validation_results.json
-
-
-### 3. Generate Transcript
 
 
 
+# Development Roadmap
 
-```
-python -m prototype.run_transcript --structure topics/ednet_structure.json```
-```
-This needs attention:
+## Priority 1: Enhanced Teaching Personas
+- Develop intelligent teaching personas beyond simple pattern matching
+- Implement `TeachingIntelligence` class for deep conceptual understanding
+- Add real-time adaptation to student responses
+- See initial implementation in `prototype/simulation/teaching_intelligence.py`
+- Maintain pattern-matching persona as experimental control condition
 
-1. The transcript is too short, not interactive and mechanic while it should reflect an authentic educationl interaction
-2. Transcript for all 4 treatment groups and for the control condition are needed.  
+### Key Components to Implement
+- Conceptual state tracking
+- Dynamic teaching path generation  
+- Response adaptation system
+- Learning progression monitoring
+
+## Priority 2: Blackboard Architecture Enhancement
+- Expand knowledge sources to include:
+ - Three teaching strategies (Socratic, constructivist, experiential)
+ - Pattern-matching control strategy
+ - Student response analysis
+- Implement proper control flow between knowledge sources
+- Add monitoring of strategy effectiveness
+
+## Priority 3: Data Utilization Improvements 
+- Remove current artificial group size limitations
+- Scale up to use larger EEDI dataset portions
+- Current limitation: Only using tiny fraction of available data
+- Target: Utilize at least 100,000 interactions (up from current ~1000)
+
+## Priority 4: Statistical Analysis Enhancement
+- Implement proper stratification for larger groups
+- Maintain balanced groups across:
+ - Misconception types
+ - Student demographics
+ - Topic areas
+- Enable meaningful comparison between:
+ - Enhanced teaching personas
+ - Pattern-matching control
+ - Original EEDI performance baseline
+
+## Priority 5: Integration Testing
+- Develop comprehensive test suite for enhanced personas
+- Validate blackboard control mechanisms
+- Test system scalability with larger data samples
+
+## Priority 6: Documentation
+- Update system architecture documentation
+- Add clear examples of persona-student interactions
+- Document statistical analysis procedures
+- Provide examples of enhanced teaching strategies
+
+## Success Metrics
+- Demonstrable improvement over pattern-matching baseline
+- Statistically significant effects with larger sample sizes
+- Clear differentiation between teaching strategies
+- Robust performance across different misconception types
+
+## Current Status
+- Basic persona implementation complete
+- Control condition identified
+- Initial statistical framework in place
+- Need to scale up data utilization
+- Need to implement enhanced teaching logic
+
+## Next Steps
+1. Implement enhanced teaching personas
+2. Remove data size limitations
+3. Scale up statistical analysis
+4. Add proper stratification
+5. Enhance blackboard control
 
 
-
-
-
-## Example Output Files
-
-### Knowledge Structure
-- `ednet_structure.json`: Concept relationships and difficulties
-- `analysis_summary.json`: Statistical overview
-- `knowledge_structure.png`: Visualization of concept space
-- `learning_progression.png`: Difficulty and timing analysis
-
-### Session Results
-- `session_transcript.txt`: Detailed learning interactions
-- `validation_results.json`: Statistical validation metrics
-
-## Contributing
-
-Areas we're currently working on:
-1. Enhanced interaction authenticity
-2. Curriculum design automation
-3. Additional visualization tools
-4. Extended EdNet pattern analysis
-
-## License
-MIT
-
-## Citation
-If you use PSS in your research, please cite:
-```
-@article{pss2025,
-  title={AI-First Curriculum Design: A Persona-based Approach with Empirical Validation},
-  year={2025},
-  journal={[Journal Placeholder]},
-  publisher={[Publisher Placeholder]}
-}
-```
