@@ -1,170 +1,203 @@
-# Persona Simulation System (PSS)
+Persona Simulation System (PSS)
 
-An AI-first approach to teaching strategy evaluation using simulated teacher-student interactions based on the EEDI dataset.
+An AI-first approach to teaching strategy evaluation using simulated teacher-student interactions based on the EEDI dataset. The system transforms static EEDI misconception data into dynamic teaching simulations, evaluated through cross-validation.
 
-## Overview
+Key Features
 
-PSS transforms static EEDI misconception data into dynamic teaching simulations to evaluate different pedagogical approaches:
-- Socratic teaching (dialectical questioning)
-- Constructivist teaching (concept building)
-- Experiential teaching (practical application)
+Dynamic teacher-student interaction simulation
 
-# Installation and housekeeping
+Integration with EEDI misconception data
 
+Three teaching approaches plus control condition:
 
-## Create new virtual environment
-```python -m venv pss-env
+Socratic teaching (dialectical questioning)
+
+Constructivist teaching (concept building)
+
+Experiential teaching (practical application)
+
+Pattern-matching (control condition)
+
+Statistical cross-validation framework
+
+Installation and Setup
+
+# Create virtual environment
+python -m venv pss-env
 source pss-env/bin/activate  # On Windows: pss-env\Scripts\activate
-```
 
-
-## Clone Repository
-```
+# Clone Repository
 git clone https://github.com/yourusername/pss.git
 cd pss
-```
 
-## Install Dependencies
-```
+# Install Dependencies and Package
 pip install -r requirements.txt
-```
-
-## Install  Package in Development Mode
-```
 pip install -e .
-```
 
+Testing
 
-# Analyses
+# Run test cross-validator with minimal data
+python -m prototype.tests.test_cross_validator
 
-## Data Preparation
-```
-# Prepare EEDI dataset
-python -m prototype.data.eedi_analyzer \
-    --input_file path/to/all_train.csv \
-    --output_dir analysis
+# Run specific teaching persona tests
+python -m prototype.tests.test_teaching_personas
 
-# Generate mock data for testing (optional)
-python -m prototype.data.generate_mock_data \
-    --size 1000 \
-    --output mock_eedi_sample.csv
-```
+# Run integration tests
+python -m prototype.tests.test_integration
 
+Enhanced Teaching Simulation
 
-## Basic Validation
-```
-# Run basic cross-validation
+The system now implements dynamic teaching interactions:
+
+# Run enhanced teaching simulation
+python -m prototype.simulation.run_enhanced_simulation \
+    --data_path="prototype/data/eedi_processed.csv" \
+    --knowledge_base="prototype/data/knowledge_base.json" \
+    --output_dir="results/enhanced_teaching/" \
+    --teaching_style="socratic" \
+    --log_level=DEBUG
+
+Cross-Validation Analysis
+
+# Basic cross-validation
 python -m prototype.validation.run_validation \
-    all_train.csv \
-    --output_dir validation_results \
-    --n_folds 5
+    --data_path="prototype/data/eedi_processed.csv" \
+    --n_folds=5 \
+    --output_dir="validation_results"
 
-# Run with increased sample size
+# Enhanced validation with larger samples
 python -m prototype.validation.run_validation \
-    all_train.csv \
-    --output_dir validation_results \
-    --n_folds 10 \
-    --group_size 200
-```
+    --data_path="prototype/data/eedi_processed.csv" \
+    --n_folds=10 \
+    --group_size=500 \
+    --stratify_by="misconception_type" \
+    --output_dir="validation_results_enhanced"
 
-## Advanced Analysis Options
-```
-# Run with specific seed for reproducibility
-python -m prototype.validation.run_validation \
-    all_train.csv \
-    --seed 42 \
-    --output_dir validation_results
+Project Structure
 
-# Run with enhanced stratification
-python -m prototype.validation.run_validation \
-    all_train.csv \
-    --stratify_by misconception_type \
-    --output_dir validation_results
+prototype/
+├── data/                      # Data and knowledge bases
+├── simulation/               # Teaching simulation
+│   ├── base_types.py        # Base classes
+│   ├── teaching_personas.py # Teaching implementations
+│   └── teaching_intelligence.py
+├── validation/              # Cross-validation framework
+│   └── eedi_cross_validator.py
+├── tests/                   # Test suite
+└── results/              # Analysis outputs
 
-# Generate detailed analysis report
-python -m prototype.analysis.generate_report \
-    validation_results/cross_validation_results.json \
-    --output analysis_report.pdf
-```
+Current Limitations and Future Work
 
+Statistical Analysis Improvements
 
-## Transcript Generation
-```
-# Generate teaching interaction transcripts
-python -m prototype.run_transcript \
-    --structure topics/ednet_structure.json \
-    --approach socratic \
-    --output transcripts/
+Increase sample sizes (target: 500+ per group)
 
-# Generate transcripts for all approaches
-for approach in socratic constructive experiential; do
-    python -m prototype.run_transcript \
-        --structure topics/ednet_structure.json \
-        --approach $approach \
-        --output transcripts/$approach/
-done
-```
+Implement bootstrap-based effect size estimation
 
+Add Bayesian analysis for small samples
 
-# Output Dirctory Structure
-```
-results/
-├── validation_results/
-│   ├── cross_validation_results.json
-│   ├── fold_*/
-│   │   └── metrics.json
-├── transcripts/
-│   ├── socratic/
-│   ├── constructive/
-│   ├── experiential/
-└── analysis/
-    ├── analysis_results.json
-    └── figures/
-```
+Enhance stratification based on misconception patterns
 
-# Improving Statistical Results
-To improve the current statistical results the following methodological enhancements are required
+Teaching Simulation Enhancements
 
-## Enhance Sample Size
-```
-# Run with larger group size and more folds
-python -m prototype.validation.run_validation \
-    all_train.csv \
-    --n_folds 10 \
-    --group_size 500 \
-    --output_dir validation_results_enhanced
-```
+Improve teaching persona adaptation
 
+Add real-time strategy adjustment
 
+Implement more sophisticated dialogue generation
 
-## Refined Stratification
-```
-# Run with enhanced stratification options
-python -m prototype.validation.run_validation \
-    all_train.csv \
-    --stratify_by "misconception_type,difficulty_level" \
-    --balanced_groups true \
-    --output_dir validation_results_stratified
-```
+Enhance misconception pattern detection
 
-## Pattern Matching Improvements
-```
-# Run with enhanced pattern matching
-python -m prototype.validation.run_validation \
-    all_train.csv \
-    --pattern_matching_threshold 0.8 \
-    --misconception_min_occurrence 5 \
-    --output_dir validation_results_patterns
-```
+Integration Improvements
 
+Better coupling between simulation and validation
 
-# Contributing
-See CONTRIBUTING.md 
+Enhanced data utilization
 
-# License
+Improved measurement of teaching effectiveness
+
+More sophisticated statistical analysis
+
+Known Issues
+
+Limited sample sizes affecting statistical power
+
+Basic pattern matching in control condition
+
+Stratification failures with small data sets
+
+Simple teaching dialogue generation
+
+Contributing
+
+See CONTRIBUTING.md for guidelines.
+
+License
+
 MIT
 
-# Development Roadmap
+PSS Commands Quick Reference
+
+# CENTRAL COMMAND: Run complete PSS analysis
+python -m prototype.run_pss_analysis \
+    --data_path="prototype/data/eedi_processed.csv" \
+    --output_dir="results/full_analysis" \
+    --n_folds=10 \
+    --group_size=500 \
+    --all_approaches=true \
+    --generate_stats=true \
+    --stratify_by="misconception_type" \
+    --seed=42
+
+# This command:
+# - Runs all teaching approaches (Socratic, Constructivist, Experiential, Control)
+# - Uses maximum available EEDI data
+# - Performs complete cross-validation
+# - Generates comprehensive statistical analysis
+# - Creates detailed teaching transcripts
+# - Outputs combined results and comparisons
+
+# Generate mock data for testing
+python -m prototype.data.generate_mock_data --size 1000 --output mock_eedi_sample.csv
+# Creates test dataset with simulated misconceptions
+
+# Run basic test of cross-validator
+python -m prototype.tests.test_cross_validator
+# Tests cross-validation with minimal synthetic data
+
+# Run enhanced teaching simulation with Socratic approach
+python -m prototype.simulation.run_enhanced_simulation --teaching_style="socratic"
+# Runs AI-driven teaching simulation with specified strategy
+
+# Run basic cross-validation
+python -m prototype.validation.run_validation --n_folds=5
+# Performs statistical validation of teaching effectiveness
+
+# Run with enhanced stratification
+python -m prototype.validation.run_validation --stratify_by="misconception_type"
+# Validates with improved group balancing
+
+# Generate teaching interaction transcripts
+python -m prototype.run_transcript --approach socratic
+# Creates detailed logs of teaching interactions
+
+# Run with specific seed for reproducibility
+python -m prototype.validation.run_validation --seed 42
+# Ensures reproducible results in validation
+
+# Run with larger groups for better statistics
+python -m prototype.validation.run_validation --group_size 500
+# Improves statistical power through larger samples
+
+# Generate analysis report
+python -m prototype.analysis.generate_report validation_results/cross_validation_results.json
+# Creates comprehensive statistical analysis report
+
+
+
+
+
+
 
 
 
@@ -217,6 +250,7 @@ def _create_balanced_groups(self, construct_stats: pd.DataFrame) -> Tuple[pd.Dat
  - Student response analysis
 - Implement proper control flow between knowledge sources
 - Add monitoring of strategy effectiveness
+
 
 ## Priority 3: Data Utilization Improvements 
 - Remove current artificial group size limitations
