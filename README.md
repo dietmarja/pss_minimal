@@ -27,12 +27,19 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Basic validation:
+### Core command
 ```bash
-python -m prototype.validation.run_validation \
-    --data_path="prototype/data/eedi_processed.csv" \
-    --n_folds=5
+python -m prototype.validation.run_validation --data_path="prototype/data/eedi_processed.csv"
 ```
+This will create an updated cross_validation_results.json file that includes a new "length_analysis" section with:
+
+- Correlation coefficients
+- R-squared values
+- Mean interaction lengths
+- Statistical significance (p-value)
+
+
+
 
 ### Enhanced A/B/C testing:
 ```bash
