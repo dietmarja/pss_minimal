@@ -4,11 +4,11 @@ AI-driven teaching strategy evaluation system using EEDI dataset simulations.
 
 ## Key Features
 
-- Dynamic teacher-student interaction simulation
+- Dynamic teacher-student interaction simulation using AI and CBR
 - EEDI misconception data integration
 - Four teaching approaches:
   - Socratic (dialectical questioning)
-  - Constructivist (concept building)
+  - Constructive (concept building)
   - Experiential (practical application)
   - Pattern-matching (baseline)
 - A/B/C testing framework:
