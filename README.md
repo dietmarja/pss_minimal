@@ -37,9 +37,40 @@ Five distinct teaching approaches are implemented:
 ```bash
 # Create virtual environment
 python -m venv pss-env
+```
 
 # Activate environment
+```
 source pss-env/bin/activate  # Windows: pss-env\Scripts\activate
+```
 
 # Install dependencies
+```
 pip install -r requirements.txt
+```
+
+
+
+
+## Usage
+### Basic Validation
+
+```
+python -m prototype.validation.run_validation \
+    --data_path="prototype/data/eedi_processed.csv"
+```
+
+This generates cross_validation_results.json containing:
+
+Strategy effectiveness metrics
+Statistical analysis results
+Interaction pattern analysis
+Performance comparisons
+
+### Enhanced Testing
+```
+python -m prototype.validation.run_validation \
+    --data_path="prototype/data/eedi_processed.csv" \
+    --n_folds=10 \
+    --strategy="pattern|persona|control"
+```
