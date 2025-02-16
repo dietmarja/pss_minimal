@@ -1,71 +1,45 @@
 # Persona Simulation System (PSS)
+AI-driven teaching strategy evaluation system for analyzing and improving mathematical misconception remediation through the EEDI dataset.
 
-AI-driven teaching strategy evaluation system using EEDI dataset simulations.
+## Project Overview
+PSS combines case-based reasoning (CBR) with AI teaching personas to evaluate different teaching strategies in reducing mathematical misconceptions. Using 17 million student interactions from the EEDI dataset, the system provides empirically-grounded insights into teaching effectiveness.
 
 ## Key Features
+### Teaching Strategies
+Five distinct teaching approaches are implemented:
+- Socratic: Dialectical questioning to stimulate critical thinking
+- Constructive: Scaffolded concept building
+- Experiential: Practical application and real-world context
+- Rule-based: Systematic pattern-based instruction
+- Traditional: Baseline comparison approach
 
-- Dynamic teacher-student interaction simulation using AI and CBR
-- EEDI misconception data integration
-- Four teaching approaches:
-  - Socratic (dialectical questioning)
-  - Constructive (concept building)
-  - Experiential (practical application)
-  - Pattern-matching (baseline)
-- A/B/C testing framework:
-  - Pattern matching (base)
-  - Persona-driven teaching
-  - Control condition
-- Statistical cross-validation
-
-## Installation
-
-```bash
-python -m venv pss-env
-source pss-env/bin/activate  # Windows: pss-env\Scripts\activate
-pip install -r requirements.txt
-```
-
-## Usage
-
-### Core command
-```bash
-python -m prototype.validation.run_validation --data_path="prototype/data/eedi_processed.csv"
-```
-This will create an updated cross_validation_results.json file that includes a new "length_analysis" section with:
-
-- Correlation coefficients
-- R-squared values
-- Mean interaction lengths
-- Statistical significance (p-value)
-
-
-
-
-### Enhanced A/B/C testing:
-```bash
-python -m prototype.validation.run_validation \
-    --data_path="prototype/data/eedi_processed.csv" \
-    --n_folds=10 \
-    --strategy="pattern|persona|control"
-```
-
-## Current Features
-
-- Cross-validation with A/B/C testing
-- Pattern matching vs persona comparison
+### Analysis Framework
+- Hybrid system combining CBR and AI approaches
+- Comprehensive cross-validation system
 - Statistical significance testing
-- Teaching approach effectiveness metrics
-- Interaction effects analysis
+- Interaction pattern analysis
+- Performance comparison across approaches
 
-## Known Limitations
+### Data Integration
+- EEDI dataset integration (17M student interactions)
+- Misconception pattern analysis
+- Teaching strategy effectiveness tracking
+- Student response modeling
 
-- Limited sample variation
-- Basic pattern matching
-- Simple persona implementation
+## Implementation
 
-## Next Steps
+### Prerequisites
+- Python 3.8+
+- Virtual environment capability
+- Minimum 16GB RAM recommended
 
-- Enhance persona sophistication
-- Improve pattern matching baseline
-- Add advanced statistical analysis
-- Scale data utilization
+### Installation
+```bash
+# Create virtual environment
+python -m venv pss-env
+
+# Activate environment
+source pss-env/bin/activate  # Windows: pss-env\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
