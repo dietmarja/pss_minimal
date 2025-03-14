@@ -2,7 +2,12 @@
 AI-driven teaching strategy evaluation system for analyzing and improving mathematical misconception remediation through the EEDI dataset.
 
 ## Project Overview
-PSS combines case-based reasoning (CBR) with AI teaching personas to evaluate different teaching strategies in reducing mathematical misconceptions. Using 17 million student interactions from the EEDI dataset, the system provides empirically-grounded insights into teaching effectiveness.
+PSS combines case-based reasoning (CBR) with AI teaching personas to evaluate different teaching strategies in reducing mathematical misconceptions. 
+Using 17 million student interactions from the EEDI dataset, the system provides empirically-grounded insights into teaching effectiveness.
+
+The EEDI Dataset is public domain available (CC0 1.0 Universal) and is available here:
+
+https://www.kaggle.com/datasets/alejopaullier/eedi-external-dataset, which is public domain 
 
 ## Key Features
 ### Teaching Strategies
